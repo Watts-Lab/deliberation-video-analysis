@@ -11,9 +11,9 @@ inputs = ' '.join(f'-i "{file}"' for file in audio_files)
 num_inputs = len(audio_files)
 
 # Construct the filter_complex part
-filter_complex = f'amix=inputs={num_inputs}:duration=longest:dropout_transition=3' # first, longest, shortest duration
+filter_complex = f'amix=inputs={num_inputs}' # first, longest, shortest duration
 
 # Assemble and return the full FFmpeg command
 command = f'ffmpeg {inputs} -filter_complex "{filter_complex}" {output_file}'
 print(command)
-subprocess.call(command, shell=True)
+
