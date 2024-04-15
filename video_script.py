@@ -1,7 +1,7 @@
 import glob
 import subprocess
 
-video_files = glob.glob("audio_files/set_two/*video-*")
+video_files = glob.glob("files/set_two/*video-*")
 output_file = "output_video.webm"
 # Create the input part of the command with `-i` flags for each video file
 inputs = ' '.join(f'-i "{file}"' for file in video_files)
