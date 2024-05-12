@@ -9,6 +9,7 @@ def main(folder):
     files.sort()
     print("Files to process:", files)
 
+    # Using ffprobe to get the audio/video start times (this is needed for offsetting/adelay)
     group_data = {}
     for filepath in files:
         if ".webm" not in filepath:
