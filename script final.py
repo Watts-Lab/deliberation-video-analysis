@@ -26,12 +26,12 @@ def main(folder):
                 "dirname": os.path.dirname(filepath),
             }
 
-        result = subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'a:0', '-show_entries', 'stream=start', '-of', 'default=noprint_wrappers=1:nokey=1', filepath], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        result = subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'a:0', '-show_entries', 'stream=start', '-of', 'default=noprint_wrappers=1:nokey=1', filepath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         start = float(result.stdout.strip())
         group_data[participant_id][track_type+"_track_start"] = start
 
         if track_type == "video":
-            result = subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=width,height', '-of', 'csv=s=x:p=0', filepath], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            result = subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=width,height', '-of', 'csv=s=x:p=0', filepath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             resolution = result.stdout.strip()
             group_data[participant_id][track_type+"_resolution"] = resolution
 
@@ -50,7 +50,7 @@ def main(folder):
                 '-filter_complex', f'[0:v]scale={data["video_resolution"]}[v];[1:a]adelay={int(data["audio_track_start"]*1000)}|{int(data["audio_track_start"]*1000)}[a]',
                 '-map', '[v]', '-map', '[a]', outfile, '-y'
             ]
-            subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Generate a combined video
     input_cmd = []
@@ -63,7 +63,7 @@ def main(folder):
     filter_complex.append(f"{''.join(f'[v{i}]' for i in range(len(filter_complex)))}hstack=inputs={len(filter_complex)}[v]")
     output_file = f'files/{folder}/output_video.mp4'
     full_cmd = ['ffmpeg'] + input_cmd + ['-filter_complex', ';'.join(filter_complex), '-map', '[v]', output_file, '-y']
-    subprocess.run(full_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    subprocess.run(full_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Process videos and audios into a single merged file.")
